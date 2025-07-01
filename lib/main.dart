@@ -26,6 +26,7 @@ import 'screens/cart_screen.dart';
 import 'screens/order_history_screen.dart';
 import 'screens/buyer_profile_screen.dart';
 import 'screens/farmer_detail_screen.dart';
+import 'screens/buyer_chatbot_screen.dart'; // ✅ Buyer Chatbot Screen
 
 // Other Screens
 import 'screens/crop_recommendation_screen.dart';
@@ -155,8 +156,10 @@ class _FarmConnectAppState extends State<FarmConnectApp> {
         '/buyer/cart': (context) => MyCartScreen(cartItems: _buyerCart),
         '/buyer/order-history': (context) => const OrderHistoryScreen(),
         '/buyer/profile': (context) => const BuyerProfileScreen(),
+        '/buyer/chatbot': (context) => const BuyerChatbotScreen(),
 
-        // ✅ Updated Chat Route
+
+        // ✅ Chat between Buyer and Farmer
         '/chat': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
           final buyerName = args != null && args['buyerName'] != null

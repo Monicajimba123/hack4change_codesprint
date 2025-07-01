@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "welcome": "Welcome to FarmConnect",
+  "subtitle": "Your smart agri-marketplace",
+  "email": "Email",
+  "password": "Password",
+  "selectRole": "Select Role",
+  "login": "Login",
+  "createAccount": "Create Account",
+  "forgotPassword": "Forgot Password",
+  "fillAllFields": "Please fill all fields.",
+  "enterValidEmail": "Please enter a valid Gmail address.",
+  "passwordValidation": "Password must be at least 8 characters.",
+  "admin": "Admin",
+  "buyer": "Buyer",
+  "farmer": "Farmer",
+  "unknownFarmer": "Unknown Farmer",
+  "unknownSupplier": "Unknown Supplier"
+}

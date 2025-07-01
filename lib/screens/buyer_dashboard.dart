@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'transportation_service_screen.dart';
-// ✅ Added
 
 class BuyerDashboard extends StatelessWidget {
   const BuyerDashboard({super.key});
@@ -51,6 +50,7 @@ class BuyerDashboard extends StatelessWidget {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
+
             _buildDashboardCard(
               context,
               icon: Icons.shopping_bag,
@@ -105,7 +105,6 @@ class BuyerDashboard extends StatelessWidget {
                 Navigator.pushNamed(context, '/recommendations');
               },
             ),
-            // ✅ Added Transportation Service
             _buildDashboardCard(
               context,
               icon: Icons.local_shipping,
@@ -118,6 +117,16 @@ class BuyerDashboard extends StatelessWidget {
                     builder: (context) => const TransportationServiceScreen(),
                   ),
                 );
+              },
+            ),
+            // ✅ Added Chatbot Card
+            _buildDashboardCard(
+              context,
+              icon: Icons.chat,
+              title: 'च्याटबोट सहायता',
+              subtitle: 'कुनै प्रश्न? हामी सहायता गर्छौं',
+              onTap: () {
+                Navigator.pushNamed(context, '/buyer/chatbot');
               },
             ),
           ],

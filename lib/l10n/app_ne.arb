@@ -1,0 +1,19 @@
+{
+  "@@locale": "ne",
+  "welcome": "FarmConnect मा स्वागत छ",
+  "subtitle": "तपाईंको स्मार्ट कृषि बजार",
+  "email": "इमेल",
+  "password": "पासवर्ड",
+  "selectRole": "भूमिका चयन गर्नुहोस्",
+  "login": "लग - इन",
+  "createAccount": "खाता सिर्जना गर्नुहोस्",
+  "forgotPassword": "पासवर्ड बिर्सनुभयो",
+  "fillAllFields": "कृपया सबै विवरण भर्नुहोस्।",
+  "enterValidEmail": "कृपया मान्य Gmail ठेगाना प्रविष्ट गर्नुहोस्।",
+  "passwordValidation": "पासवर्ड कम्तिमा 8 अक्षरको हुनुपर्छ।",
+  "admin": "प्रशासक",
+  "buyer": "क्रेता",
+  "farmer": "किसान",
+  "unknownFarmer": "अज्ञात किसान",
+  "unknownSupplier": "अज्ञात आपूर्तिकर्ता"
+}
