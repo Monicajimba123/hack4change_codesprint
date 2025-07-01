@@ -10,6 +10,7 @@ class ContactSupplierScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     const supplierName = 'रामु किसान';
     const supplierPhone = '९८४१२३४५६७८';
+    const buyerName = 'खरिदकर्ता'; // You can replace this with dynamic value if needed
 
     return Scaffold(
       appBar: AppBar(title: const Text('आपूर्तिकर्तासँग सम्पर्क गर्नुहोस्')),
@@ -62,7 +63,10 @@ class ContactSupplierScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ChatScreen(supplierName: supplierName),
+                          builder: (context) => const ChatScreen(
+                            buyerName: buyerName,
+                            sellerName: supplierName,
+                          ),
                         ),
                       );
                     },

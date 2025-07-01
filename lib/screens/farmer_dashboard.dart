@@ -6,8 +6,7 @@ import 'smart_crop_recommendation.dart';
 import 'crop_calendar_screen.dart';
 import 'chat_screen.dart';
 import 'simple_map_screen.dart';
-import 'transportation_service_screen.dart';
-// ✅ Transport screen import
+import 'transportation_service_screen.dart'; // ✅ Transport screen import
 
 class FarmerDashboard extends StatelessWidget {
   final String farmerName;
@@ -63,8 +62,10 @@ class FarmerDashboard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      const ChatScreen(supplierName: 'Supplier ABC'),
+                  builder: (context) => ChatScreen(
+                    buyerName: 'खरिदकर्ता',
+                    sellerName: farmerName,
+                  ),
                 ),
               );
             },

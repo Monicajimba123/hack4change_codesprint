@@ -55,9 +55,7 @@ class _FarmConnectAppState extends State<FarmConnectApp> {
   }
 
   List<Map<String, dynamic>> _myCrops(String farmerName) {
-    return _allCrops
-        .where((crop) => crop['farmerName'] == farmerName)
-        .toList();
+    return _allCrops.where((crop) => crop['farmerName'] == farmerName).toList();
   }
 
   void _addToCart(Map<String, dynamic> crop) {
@@ -95,9 +93,7 @@ class _FarmConnectAppState extends State<FarmConnectApp> {
 
         // Farmer Routes
         '/farmer': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments
-              as Map<String, dynamic>?;
-
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
           final farmerName = args != null && args['farmerName'] != null
               ? args['farmerName'] as String
               : 'अज्ञात किसान';
@@ -120,18 +116,17 @@ class _FarmConnectAppState extends State<FarmConnectApp> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => MyCropsScreen(
-                          crops: _myCrops(farmerName),
-                        )),
+                  builder: (_) => MyCropsScreen(
+                    crops: _myCrops(farmerName),
+                  ),
+                ),
               );
             },
           );
         },
 
         '/farmer/profile': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments
-              as Map<String, dynamic>?;
-
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
           final farmerName = args != null && args['farmerName'] != null
               ? args['farmerName'] as String
               : 'अज्ञात किसान';
@@ -161,24 +156,22 @@ class _FarmConnectAppState extends State<FarmConnectApp> {
         '/buyer/order-history': (context) => const OrderHistoryScreen(),
         '/buyer/profile': (context) => const BuyerProfileScreen(),
 
-        // Chat
+        // ✅ Updated Chat Route
         '/chat': (context) {
-          final args = ModalRoute.of(context)?.settings.arguments
-              as Map<String, dynamic>?;
-
-          final supplierName = args != null && args['supplierName'] != null
-              ? args['supplierName'] as String
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final buyerName = args != null && args['buyerName'] != null
+              ? args['buyerName'] as String
+              : 'अज्ञात खरिदकर्ता';
+          final sellerName = args != null && args['sellerName'] != null
+              ? args['sellerName'] as String
               : 'अज्ञात सप्लायर';
 
-          return ChatScreen(supplierName: supplierName);
+          return ChatScreen(buyerName: buyerName, sellerName: sellerName);
         },
 
         // Other Routes
-        '/sustainability-settings': (context) =>
-            const SustainabilitySettingsScreen(),
+        '/sustainability-settings': (context) => const SustainabilitySettingsScreen(),
         '/recommendations': (context) => const CropRecommendationScreen(),
-
-        // ✅ Google Map Route
         '/map': (context) => const SimpleMapScreen(),
       },
     );
