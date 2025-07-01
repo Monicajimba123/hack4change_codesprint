@@ -10,87 +10,176 @@ class SmartCropRecommendationScreen extends StatefulWidget {
 
 class _SmartCropRecommendationScreenState
     extends State<SmartCropRecommendationScreen> {
-  final TextEditingController locationController = TextEditingController();
-  final TextEditingController soilController = TextEditingController();
-  final TextEditingController waterController = TextEditingController();
-  String recommendation = '';
+  String? selectedSoilType;
+  String? selectedWaterLevel;
+  String? selectedRegion;
 
-  void generateRecommendation() {
-    String soil = soilController.text.toLowerCase();
-    String water = waterController.text.toLowerCase();
+  String soilBasedCrop = '';
+  String waterBasedCrop = '';
+  String regionBasedCrop = '';
 
-    String result = 'मकै'; // Default recommendation
+  final List<String> soilTypes = [
+    'लोम',
+    'कालो',
+    'चिकन',
+    'रेतीलो',
+    'पानीलो',
+    'बालु',
+  ];
 
-    if (soil.contains('लोम') && water.contains('धेरै')) {
-      result = 'धान';
-    } else if (soil.contains('बालु') && water.contains('कम')) {
-      result = 'गहुँ';
-    } else if (soil.contains('कालो')) {
-      result = 'आलु';
-    } else if (soil.contains('चिकन') || soil.contains('clay')) {
-      if (water.contains('मध्यम') || water.contains('कम')) {
-        result = 'चना';
-      } else {
-        result = 'तेलहन';
-      }
-    } else if (soil.contains('रेतीलो') || soil.contains('sand')) {
-      if (water.contains('कम')) {
-        result = 'कागती';
-      } else {
-        result = 'खरबुजा';
-      }
-    } else if (soil.contains('पानीलो') || soil.contains('moist')) {
-      result = 'काँक्रो';
-    } else if (soil.contains('छोटो') ||
-        soil.contains('शुष्क') ||
-        water.contains('कम')) {
-      result = 'मसुरो';
-    } else if (soil.contains('पर्वतीय') ||
-        locationController.text.toLowerCase().contains('पहाड')) {
-      result = 'कोदो';
-    } else if (locationController.text.toLowerCase().contains('तराई')) {
-      result = 'गन्ना';
+  final List<String> waterLevels = ['धेरै', 'मध्यम', 'कम'];
+
+  final List<String> regions = ['तराई', 'पहाड', 'हिमाल'];
+
+  void generateRecommendations() {
+    // Soil-based crop
+    if (selectedSoilType == 'लोम') {
+      soilBasedCrop = 'धान';
+    } else if (selectedSoilType == 'कालो') {
+      soilBasedCrop = 'आलु';
+    } else if (selectedSoilType == 'चिकन') {
+      soilBasedCrop = 'चना';
+    } else if (selectedSoilType == 'रेतीलो') {
+      soilBasedCrop = 'कागती';
+    } else if (selectedSoilType == 'पानीलो') {
+      soilBasedCrop = 'काँक्रो';
+    } else if (selectedSoilType == 'बालु') {
+      soilBasedCrop = 'गहुँ';
     }
 
-    setState(() {
-      recommendation = result;
-    });
+    // Water-based crop
+    if (selectedWaterLevel == 'धेरै') {
+      waterBasedCrop = 'धान';
+    } else if (selectedWaterLevel == 'मध्यम') {
+      waterBasedCrop = 'काउली';
+    } else if (selectedWaterLevel == 'कम') {
+      waterBasedCrop = 'मसुरो';
+    }
+
+    // Region-based crop
+    if (selectedRegion == 'तराई') {
+      regionBasedCrop = 'गन्ना';
+    } else if (selectedRegion == 'पहाड') {
+      regionBasedCrop = 'कोदो';
+    } else if (selectedRegion == 'हिमाल') {
+      regionBasedCrop = 'स्याउ';
+    }
+
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('स्मार्ट बाली सिफारिस'),
+        title: const Text('🔍 बाली सिफारिस सुझाव'),
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            TextField(
-              controller: locationController,
-              decoration: const InputDecoration(labelText: 'स्थान'),
+            const Text(
+              '🧱 कुन माटोमा कुन बाली?',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            TextField(
-              controller: soilController,
-              decoration: const InputDecoration(labelText: 'माटोको प्रकार'),
-            ),
-            TextField(
-              controller: waterController,
-              decoration: const InputDecoration(labelText: 'पानी उपलब्धता'),
+            DropdownButtonFormField<String>(
+              value: selectedSoilType,
+              hint: const Text('माटोको प्रकार छान्नुहोस्'),
+              items: soilTypes
+                  .map(
+                    (soil) => DropdownMenuItem(value: soil, child: Text(soil)),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() => selectedSoilType = value);
+              },
             ),
             const SizedBox(height: 20),
+            const Text(
+              '💧 पानी कति छ भने कुन बाली?',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            DropdownButtonFormField<String>(
+              value: selectedWaterLevel,
+              hint: const Text('पानीको मात्रा छान्नुहोस्'),
+              items: waterLevels
+                  .map(
+                    (level) =>
+                        DropdownMenuItem(value: level, child: Text(level)),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() => selectedWaterLevel = value);
+              },
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              '🏔️ क्षेत्र अनुसार कुन बाली?',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            DropdownButtonFormField<String>(
+              value: selectedRegion,
+              hint: const Text('क्षेत्र छान्नुहोस्'),
+              items: regions
+                  .map(
+                    (region) =>
+                        DropdownMenuItem(value: region, child: Text(region)),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                setState(() => selectedRegion = value);
+              },
+            ),
+            const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: generateRecommendation,
+              onPressed: () {
+                if (selectedSoilType != null &&
+                    selectedWaterLevel != null &&
+                    selectedRegion != null) {
+                  generateRecommendations();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('कृपया सबै विकल्पहरू छान्नुहोस्'),
+                    ),
+                  );
+                }
+              },
               child: const Text('सिफारिस हेर्नुहोस्'),
             ),
-            const SizedBox(height: 20),
-            if (recommendation.isNotEmpty)
-              Text(
-                '📌 सिफारिस बाली: $recommendation',
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            const SizedBox(height: 30),
+            if (soilBasedCrop.isNotEmpty ||
+                waterBasedCrop.isNotEmpty ||
+                regionBasedCrop.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (soilBasedCrop.isNotEmpty)
+                    Text(
+                      '🧱 माटोको आधारमा: $soilBasedCrop',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  if (waterBasedCrop.isNotEmpty)
+                    Text(
+                      '💧 पानीको आधारमा: $waterBasedCrop',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  if (regionBasedCrop.isNotEmpty)
+                    Text(
+                      '🏔️ क्षेत्रको आधारमा: $regionBasedCrop',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                ],
               ),
           ],
         ),
