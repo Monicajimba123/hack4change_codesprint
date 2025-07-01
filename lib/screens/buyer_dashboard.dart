@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'transportation_service_screen.dart';
+// ✅ Added
 
 class BuyerDashboard extends StatelessWidget {
   const BuyerDashboard({super.key});
@@ -36,7 +38,7 @@ class BuyerDashboard extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pushReplacementNamed(context, '/');  // Navigate to login page
+            Navigator.pushReplacementNamed(context, '/');
           },
         ),
       ),
@@ -101,6 +103,21 @@ class BuyerDashboard extends StatelessWidget {
               subtitle: 'क्षेत्र अनुसार सुझावहरू प्राप्त गर्नुहोस्',
               onTap: () {
                 Navigator.pushNamed(context, '/recommendations');
+              },
+            ),
+            // ✅ Added Transportation Service
+            _buildDashboardCard(
+              context,
+              icon: Icons.local_shipping,
+              title: 'ढुवानी सेवा',
+              subtitle: 'उपलब्ध यातायात सेवाहरू हेर्नुहोस्',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TransportationServiceScreen(),
+                  ),
+                );
               },
             ),
           ],

@@ -14,13 +14,30 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
+  final Map<String, String> _autoReplies = {
+    'मुला': 'मुलाको बीउ अहिले मौसमी रुपमा उपयुक्त छ। कृपया परिमाण बताउनुहोस्।',
+    'धान':
+        'धानका लागि हामीसँग Ram Dhan, Sona Mansuli, र Hybrid धान उपलब्ध छन्।',
+    'विक्री':
+        'तपाईं विक्रीका लागि चाहनुहुन्छ भने कृपया मात्रा र स्थान उल्लेख गर्नुहोस्।',
+    'किन्न चाहन्छु': 'कृपया कुन बाली किन्न चाहनुहुन्छ? हामी विवरण दिनेछौं।',
+    'खाद': 'हामीसँग जैविक र रासायनिक खाद दुवै उपलब्ध छन्। कुन चाहिन्छ?',
+    'सहायता': 'कृपया तपाईंलाई कुन विषयमा सहायता चाहिएको हो भन्ने बताउनुहोस्।',
+    'पानी': 'सिंचाइको लागि पानी व्यवस्थापन समाधानहरू पनि उपलब्ध छन्।',
+    'पेस्टिसाइड':
+        'पेस्टिसाइडको लागि हामीसँग विभिन्न विकल्प छन्। तपाईको बाली अनुसार सुझाव दिन सक्छौं।',
+  };
+
   void _sendMessage() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
+
     setState(() {
       _messages.add(_Message(text: text, isMe: true));
     });
+
     _controller.clear();
+
     // Scroll to bottom after a short delay
     Future.delayed(const Duration(milliseconds: 100), () {
       _scrollController.animateTo(
@@ -29,13 +46,20 @@ class _ChatScreenState extends State<ChatScreen> {
         curve: Curves.easeOut,
       );
     });
-    // You can add a fake reply here for demo purposes
+
+    // Auto-reply logic
     Future.delayed(const Duration(milliseconds: 800), () {
+      String reply = 'यो तपाईको सन्देशको प्रतिक्रिया हो: "$text"';
+
+      for (var keyword in _autoReplies.keys) {
+        if (text.toLowerCase().contains(keyword)) {
+          reply = _autoReplies[keyword]!;
+          break;
+        }
+      }
+
       setState(() {
-        _messages.add(_Message(
-          text: "यो तपाईको सन्देशको प्रतिक्रिया हो: \"$text\"",
-          isMe: false,
-        ));
+        _messages.add(_Message(text: reply, isMe: false));
       });
     });
   }
@@ -57,10 +81,14 @@ class _ChatScreenState extends State<ChatScreen> {
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: message.isMe
                           ? Colors.blueAccent.withOpacity(0.8)

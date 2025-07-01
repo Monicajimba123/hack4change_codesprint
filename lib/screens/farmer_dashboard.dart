@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import '../../widgets/common/sustainability_badge_display.dart';
 import '../../services/sustainability_service.dart';
 import 'dart:math';
-import 'smart_crop_recommendation.dart'; // ✅ Already added
-import 'crop_calendar_screen.dart'; // ✅ New import
-import 'chat_screen.dart'; // <-- Import ChatScreen (adjust path as needed)
-import 'simple_map_screen.dart'; // <-- Added import for your map screen
+import 'smart_crop_recommendation.dart';
+import 'crop_calendar_screen.dart';
+import 'chat_screen.dart';
+import 'simple_map_screen.dart';
+import 'transportation_service_screen.dart';
+// ✅ Transport screen import
 
 class FarmerDashboard extends StatelessWidget {
   final String farmerName;
@@ -23,7 +25,7 @@ class FarmerDashboard extends StatelessWidget {
     "रुख रोप्न सबैभन्दा राम्रो समय २० वर्ष अगाडि थियो। दोस्रो राम्रो समय अहिले हो।",
     "दिगोपन कुनै लक्ष्य होइन, सोच्ने तरिका हो।",
     "स्वस्थ माटो, स्वस्थ जीवन।",
-    "माया गरेर उमार, गर्वले बटार।"
+    "माया गरेर उमार, गर्वले बटार।",
   ];
 
   @override
@@ -54,7 +56,6 @@ class FarmerDashboard extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/');
             },
           ),
-          // NEW: Chat Icon Button added here in AppBar
           IconButton(
             icon: const Icon(Icons.chat),
             tooltip: "च्याट खोल्नुहोस्",
@@ -77,18 +78,12 @@ class FarmerDashboard extends StatelessWidget {
           children: [
             Text(
               "शुभदिन, $farmerName!",
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             Text(
               "आज: $dateStr",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade700,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
             ),
             const SizedBox(height: 16),
             _buildSustainabilityOverview(context, sustainabilityScore),
@@ -127,7 +122,6 @@ class FarmerDashboard extends StatelessWidget {
                       Navigator.pushNamed(context, '/farmer/profile');
                     },
                   ),
-                  // Added Map Card here
                   _buildAnimatedDashboardCard(
                     icon: Icons.map,
                     label: 'नक्सा खोल्नुहोस्',
@@ -164,6 +158,21 @@ class FarmerDashboard extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const CropCalendarScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  // ✅ Added Transportation Card
+                  _buildAnimatedDashboardCard(
+                    icon: Icons.local_shipping,
+                    label: 'ढुवानी सेवा',
+                    color: Colors.deepPurple,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const TransportationServiceScreen(),
                         ),
                       );
                     },
@@ -232,10 +241,7 @@ class FarmerDashboard extends StatelessWidget {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeOutBack,
       builder: (context, value, child) {
-        return Transform.scale(
-          scale: value,
-          child: child,
-        );
+        return Transform.scale(scale: value, child: child);
       },
       child: _buildDashboardCard(
         icon: icon,
