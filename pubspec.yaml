@@ -1,0 +1,35 @@
+name: farmconnect
+description: A smart agri-marketplace app.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  table_calendar: ^3.0.9
+  nepali_date_picker: ^7.0.0
+  google_maps_flutter: ^2.6.0
+  geolocator: ^11.0.0
+  permission_handler: ^11.3.1
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images.png
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images.png"
