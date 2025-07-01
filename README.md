@@ -42,23 +42,6 @@
 ---
 
 
-## **How to Run**
-
-1. **Install Flutter:** [Flutter Setup Guide](https://flutter.dev/docs/get-started/install)
-2. **Clone the Repository:**  
-   ```sh
-   git clone https://github.com/ks3891/farmconnect_hack4business
-   cd farmconnect_hack4business 
-   ```
-3. **Install Dependencies:**  
-   ```sh
-   flutter pub get
-   ```
-4. **Run the App:**  
-   ```sh
-   flutter run
-   ```
-   > _Open on an Android/iOS device or emulator._
 
 
 
