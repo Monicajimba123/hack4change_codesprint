@@ -1,15 +1,37 @@
 import 'package:flutter/material.dart';
 
-class FarmerDetailScreen extends StatelessWidget {
+class FarmerDetailScreen extends StatefulWidget {
   final Map<String, dynamic> crop;
 
   const FarmerDetailScreen({super.key, required this.crop});
 
   @override
+  State<FarmerDetailScreen> createState() => _FarmerDetailScreenState();
+}
+
+class _FarmerDetailScreenState extends State<FarmerDetailScreen> {
+  bool isNepali = true; // Language toggle
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${crop['farmerName'] ?? "कृषक"} प्रोफाइल'),
+        title: Text(
+          isNepali
+              ? '${widget.crop['farmerName'] ?? "कृषक"} प्रोफाइल'
+              : '${widget.crop['farmerName'] ?? "Farmer"} Profile',
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: isNepali ? 'Switch to English' : 'नेपालीमा स्विच गर्नुहोस्',
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali;
+              });
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -17,29 +39,44 @@ class FarmerDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              crop['name'] ?? 'बाली',
+              widget.crop['name'] ?? (isNepali ? 'बाली' : 'Crop'),
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            Text('कृषक: ${crop['farmerName'] ?? 'अज्ञात'}'),
-            Text('ठेगाना: ${crop['location'] ?? 'अज्ञात'}'),
-            Text('मूल्य: रु. ${crop['price'] ?? 'N/A'} प्रति के.जि.'),
+            Text(
+              isNepali
+                  ? 'कृषक: ${widget.crop['farmerName'] ?? 'अज्ञात'}'
+                  : 'Farmer: ${widget.crop['farmerName'] ?? 'Unknown'}',
+            ),
+            Text(
+              isNepali
+                  ? 'ठेगाना: ${widget.crop['location'] ?? 'अज्ञात'}'
+                  : 'Location: ${widget.crop['location'] ?? 'Unknown'}',
+            ),
+            Text(
+              isNepali
+                  ? 'मूल्य: रु. ${widget.crop['price'] ?? 'N/A'} प्रति के.जि.'
+                  : 'Price: Rs. ${widget.crop['price'] ?? 'N/A'} per kg',
+            ),
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Return the crop to add to cart
-                Navigator.pop(context, crop);
+                Navigator.pop(context, widget.crop);
               },
-              child: const Text('कार्टमा थप्नुहोस्'),
+              child: Text(isNepali ? 'कार्टमा थप्नुहोस्' : 'Add to Cart'),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('अर्डर सफलतापूर्वक गरियो!')),
+                  SnackBar(
+                    content: Text(
+                      isNepali ? 'अर्डर सफलतापूर्वक गरियो!' : 'Order placed successfully!',
+                    ),
+                  ),
                 );
               },
-              child: const Text('अर्डर गर्नुहोस्'),
+              child: Text(isNepali ? 'अर्डर गर्नुहोस्' : 'Place Order'),
             ),
           ],
         ),

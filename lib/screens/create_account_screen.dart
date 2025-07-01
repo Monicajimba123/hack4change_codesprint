@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/session_manager.dart';  // <-- Import SessionManager
+import '../services/session_manager.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -17,6 +17,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   final _phoneController = TextEditingController();
   final _locationController = TextEditingController();
   String? _selectedRole;
+
+  bool isNepali = true; // 🔥 Language toggle
+
+  String getText({required String en, required String ne}) {
+    return isNepali ? ne : en;
+  }
 
   @override
   void dispose() {
@@ -36,20 +42,26 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       final phone = _phoneController.text.trim();
       final location = _locationController.text.trim();
 
-      // Save username in SessionManager singleton
       SessionManager().loggedInUserName = name;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('$name को लागि खाता सिर्जना भयो')),
+        SnackBar(
+          content: Text(
+            getText(
+              en: 'Account created for $name',
+              ne: '$name को लागि खाता सिर्जना भयो',
+            ),
+          ),
+        ),
       );
 
-      if (role == 'क्रेता') {
+      if (role == getText(en: 'Buyer', ne: 'क्रेता')) {
         Navigator.pushReplacementNamed(
           context,
           '/buyer',
           arguments: {'userName': name},
         );
-      } else if (role == 'आपूर्तिकर्ता') {
+      } else if (role == getText(en: 'Supplier', ne: 'आपूर्तिकर्ता')) {
         Navigator.pushReplacementNamed(
           context,
           '/farmer',
@@ -58,7 +70,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('कृपया सबै आवश्यक क्षेत्रहरु भर्नुहोस्')),
+        SnackBar(
+          content: Text(
+            getText(
+              en: 'Please fill all required fields',
+              ne: 'कृपया सबै आवश्यक क्षेत्रहरु भर्नुहोस्',
+            ),
+          ),
+        ),
       );
     }
   }
@@ -66,27 +85,50 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("खाता सिर्जना गर्नुहोस्")),
+      appBar: AppBar(
+        title: Text(
+          getText(en: "Create Account", ne: "खाता सिर्जना गर्नुहोस्"),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali;
+              });
+            },
+            tooltip: getText(en: 'Language', ne: 'भाषा'),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              _buildInput(_nameController, 'पुरा नाम', Icons.person),
+              _buildInput(_nameController, getText(en: 'Full Name', ne: 'पुरा नाम'), Icons.person),
               const SizedBox(height: 16),
-              _buildInput(_emailController, 'इमेल', Icons.email),
+              _buildInput(_emailController, getText(en: 'Email', ne: 'इमेल'), Icons.email),
               const SizedBox(height: 16),
-              _buildInput(_passwordController, 'पासवर्ड', Icons.lock, isPassword: true),
+              _buildInput(_passwordController, getText(en: 'Password', ne: 'पासवर्ड'), Icons.lock, isPassword: true),
               const SizedBox(height: 16),
-              _buildInput(_phoneController, 'फोन नम्बर', Icons.phone, keyboardType: TextInputType.phone),
+              _buildInput(
+                _phoneController,
+                getText(en: 'Phone Number', ne: 'फोन नम्बर'),
+                Icons.phone,
+                keyboardType: TextInputType.phone,
+              ),
               const SizedBox(height: 16),
-              _buildInput(_locationController, 'ठेगाना', Icons.location_on),
+              _buildInput(_locationController, getText(en: 'Address', ne: 'ठेगाना'), Icons.location_on),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _selectedRole,
-                hint: const Text('भूमिका चयन गर्नुहोस्'),
-                items: ['क्रेता', 'आपूर्तिकर्ता'].map((role) {
+                hint: Text(getText(en: 'Select Role', ne: 'भूमिका चयन गर्नुहोस्')),
+                items: [
+                  getText(en: 'Buyer', ne: 'क्रेता'),
+                  getText(en: 'Supplier', ne: 'आपूर्तिकर्ता'),
+                ].map((role) {
                   return DropdownMenuItem(value: role, child: Text(role));
                 }).toList(),
                 onChanged: (value) => setState(() => _selectedRole = value),
@@ -95,13 +137,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   filled: true,
                   fillColor: Colors.white,
                 ),
-                validator: (value) =>
-                    value == null ? 'कृपया भूमिका चयन गर्नुहोस्' : null,
+                validator: (value) => value == null
+                    ? getText(en: 'Please select role', ne: 'कृपया भूमिका चयन गर्नुहोस्')
+                    : null,
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _register,
-                child: const Text("खाता सिर्जना गर्नुहोस्"),
+                child: Text(
+                  getText(en: "Create Account", ne: "खाता सिर्जना गर्नुहोस्"),
+                ),
               ),
             ],
           ),
@@ -122,12 +167,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       obscureText: isPassword,
       keyboardType: keyboardType,
       validator: (value) {
-        // फोन नम्बर र ठेगाना अनिवार्य होइनन् (optional fields)
-        if (label == "फोन नम्बर" || label == "ठेगाना") {
+        if (label == getText(en: "Phone Number", ne: "फोन नम्बर") ||
+            label == getText(en: "Address", ne: "ठेगाना")) {
           return null;
         }
         if (value == null || value.trim().isEmpty) {
-          return 'कृपया $label लेख्नुहोस्';
+          return '${getText(en: 'Please enter', ne: 'कृपया')} $label';
         }
         return null;
       },

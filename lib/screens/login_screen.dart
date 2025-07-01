@@ -12,11 +12,53 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   String? _selectedRole;
   bool _obscurePassword = true;
+  String _currentLang = 'ne'; // Default language is Nepali
 
+  // Colors
   static const Color _deepGreen = Color(0xFF227C49);
   static const Color _accentGreen = Color(0xFF9FE870);
   static const Color _inputGreen = Color(0xFFF2FFF6);
   static const Color _borderGreen = Color(0xFF65B891);
+
+  // Translation Map
+  final Map<String, Map<String, String>> _localizedValues = {
+    'en': {
+      'welcome': 'Welcome to FarmConnect',
+      'tagline':
+          'A bridge connecting farmers and consumers through technology',
+      'email': 'Email',
+      'password': 'Password',
+      'select_role': 'Select Role',
+      'login': 'Login',
+      'create_account': 'Create Account',
+      'forgot_password': 'Forgot Password?',
+      'please_fill_all': 'Please fill all fields and select a role',
+      'invalid_email': 'Please enter a valid Gmail address (@gmail.com)',
+      'password_length': 'Password must be at least 8 characters',
+      'admin': 'Admin',
+      'buyer': 'Buyer',
+      'farmer': 'Farmer',
+    },
+    'ne': {
+      'welcome': 'FarmConnect मा स्वागत छ',
+      'tagline': 'किसान र उपभोक्तालाई प्रविधिमार्फत जोड्ने पुल',
+      'email': 'इमेल',
+      'password': 'पासवर्ड',
+      'select_role': 'भूमिका चयन गर्नुहोस्',
+      'login': 'लगइन',
+      'create_account': 'खाता सिर्जना गर्नुहोस्',
+      'forgot_password': 'पासवर्ड बिर्सनुभयो?',
+      'please_fill_all': 'कृपया सबै क्षेत्रहरू भर्नुहोस् र भूमिका चयन गर्नुहोस्',
+      'invalid_email':
+          'कृपया मान्य Gmail ठेगाना प्रविष्ट गर्नुहोस् (@gmail.com)',
+      'password_length': 'पासवर्ड कम्तीमा ८ अक्षरको हुनुपर्छ',
+      'admin': 'प्रशासक',
+      'buyer': 'ग्राहक',
+      'farmer': 'कृषक',
+    },
+  };
+
+  String t(String key) => _localizedValues[_currentLang]?[key] ?? key;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +70,25 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Language toggle button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _currentLang = _currentLang == 'ne' ? 'en' : 'ne';
+                      });
+                    },
+                    child: Text(
+                      _currentLang == 'ne' ? 'English' : 'नेपाली',
+                      style: TextStyle(
+                          color: _deepGreen, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
               CircleAvatar(
                 radius: 34,
                 backgroundColor: _accentGreen,
@@ -35,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
               Text(
-                'FarmConnect मा स्वागत छ',
+                t('welcome'),
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
@@ -45,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 9),
               Text(
-                'किसान र उपभोक्तालाई प्रविधिमार्फत जोड्ने पुल',
+                t('tagline'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
@@ -67,10 +128,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 30),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 22, vertical: 30),
                 child: Column(
                   children: [
-                    _buildTextField(_emailController, 'इमेल', Icons.email_outlined),
+                    _buildTextField(
+                        _emailController, t('email'), Icons.email_outlined),
                     const SizedBox(height: 14),
                     _buildPasswordField(),
                     const SizedBox(height: 14),
@@ -89,7 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           elevation: 2,
                         ),
-                        child: const Text('लगइन', style: TextStyle(fontSize: 16)),
+                        child: Text(t('login'),
+                            style: const TextStyle(fontSize: 16)),
                       ),
                     ),
                   ],
@@ -97,17 +161,21 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 17),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, '/create-account'),
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/create-account'),
                 child: Text(
-                  "खाता सिर्जना गर्नुहोस्",
-                  style: TextStyle(color: _deepGreen, fontWeight: FontWeight.w600),
+                  t('create_account'),
+                  style: TextStyle(
+                      color: _deepGreen, fontWeight: FontWeight.w600),
                 ),
               ),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, '/forgot-password'),
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/forgot-password'),
                 child: Text(
-                  "पासवर्ड बिर्सनुभयो?",
-                  style: TextStyle(color: _deepGreen, fontWeight: FontWeight.w600),
+                  t('forgot_password'),
+                  style: TextStyle(
+                      color: _deepGreen, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -117,7 +185,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, IconData icon,
+  Widget _buildTextField(
+      TextEditingController controller, String label, IconData icon,
       {bool isPassword = false}) {
     return TextField(
       controller: controller,
@@ -126,7 +195,8 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: _borderGreen),
         labelText: label,
-        labelStyle: TextStyle(color: _deepGreen, fontWeight: FontWeight.w500),
+        labelStyle:
+            TextStyle(color: _deepGreen, fontWeight: FontWeight.w500),
         filled: true,
         fillColor: _inputGreen,
         border: OutlineInputBorder(
@@ -135,7 +205,8 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: _borderGreen.withOpacity(0.35), width: 1),
+          borderSide:
+              BorderSide(color: _borderGreen.withOpacity(0.35), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -152,8 +223,9 @@ class _LoginScreenState extends State<LoginScreen> {
       style: const TextStyle(fontSize: 16),
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.lock_outline, color: _borderGreen),
-        labelText: 'पासवर्ड',
-        labelStyle: TextStyle(color: _deepGreen, fontWeight: FontWeight.w500),
+        labelText: t('password'),
+        labelStyle:
+            TextStyle(color: _deepGreen, fontWeight: FontWeight.w500),
         filled: true,
         fillColor: _inputGreen,
         border: OutlineInputBorder(
@@ -162,7 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: _borderGreen.withOpacity(0.35), width: 1),
+          borderSide:
+              BorderSide(color: _borderGreen.withOpacity(0.35), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -186,8 +259,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildRoleDropdown() {
     return DropdownButtonFormField<String>(
       value: _selectedRole,
-      hint: const Text('भूमिका चयन गर्नुहोस्'),
-      items: ['प्रशासक', 'ग्राहक', 'कृषक'].map((role) {
+      hint: Text(t('select_role')),
+      items: [
+        t('admin'),
+        t('buyer'),
+        t('farmer'),
+      ].map((role) {
         return DropdownMenuItem(value: role, child: Text(role));
       }).toList(),
       onChanged: (value) {
@@ -202,7 +279,8 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: _borderGreen.withOpacity(0.35), width: 1),
+          borderSide:
+              BorderSide(color: _borderGreen.withOpacity(0.35), width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -210,7 +288,8 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         filled: true,
         fillColor: _inputGreen,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
     );
   }
@@ -221,43 +300,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (email.isEmpty || password.isEmpty || _selectedRole == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('कृपया सबै क्षेत्रहरू भर्नुहोस् र भूमिका चयन गर्नुहोस्'),
-        ),
+        SnackBar(content: Text(t('please_fill_all'))),
       );
       return;
     }
 
     if (!email.endsWith('@gmail.com')) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('कृपया मान्य Gmail ठेगाना प्रविष्ट गर्नुहोस् (@gmail.com)'),
-        ),
+        SnackBar(content: Text(t('invalid_email'))),
       );
       return;
     }
 
     if (password.length < 8) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('पासवर्ड कम्तीमा ८ अक्षरको हुनुपर्छ'),
-        ),
+        SnackBar(content: Text(t('password_length'))),
       );
       return;
     }
 
-    // Extract username from email before '@'
     final userName = email.split('@')[0];
 
-    if (_selectedRole == 'प्रशासक') {
+    if (_selectedRole == t('admin')) {
       Navigator.pushReplacementNamed(context, '/admin');
-    } else if (_selectedRole == 'ग्राहक') {
+    } else if (_selectedRole == t('buyer')) {
       Navigator.pushReplacementNamed(
         context,
         '/buyer',
-        arguments: {'farmerName': userName}, // pass as farmerName key for consistency
+        arguments: {'farmerName': userName},
       );
-    } else if (_selectedRole == 'कृषक') {
+    } else if (_selectedRole == t('farmer')) {
       Navigator.pushReplacementNamed(
         context,
         '/farmer',

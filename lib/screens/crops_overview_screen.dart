@@ -10,44 +10,66 @@ class CropsOverviewScreen extends StatefulWidget {
 class _CropsOverviewScreenState extends State<CropsOverviewScreen> {
   List<Map<String, dynamic>> crops = [];
   bool isLoading = true;
+  bool isNepali = false; // 🔥 Language toggle state
 
   @override
   void initState() {
     super.initState();
-    _fetchCrops(); // Simulated fetch for now
+    _fetchCrops();
   }
 
   Future<void> _fetchCrops() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    // TODO: Replace this with your backend fetch (Firebase, Supabase, etc.)
     setState(() {
       crops = [
         {
           'name': 'Tomato',
+          'name_ne': 'गोलभेंडा',
           'price': 80,
           'quantity': 50,
           'farmer': 'Sita Farmer',
+          'farmer_ne': 'सिता किसान',
         },
         {
           'name': 'Cabbage',
+          'name_ne': 'बन्दगोभी',
           'price': 60,
           'quantity': 30,
           'farmer': 'Ram Supplier',
+          'farmer_ne': 'राम सप्लायर',
         },
       ];
       isLoading = false;
     });
   }
 
+  /// 🔥 Translation function
+  String tr(String en, String ne) {
+    return isNepali ? ne : en;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Crops Overview')),
+      appBar: AppBar(
+        title: Text(tr('Crops Overview', 'बालीहरूको अवलोकन')),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: tr('Switch Language', 'भाषा परिवर्तन गर्नुहोस्'),
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali;
+              });
+            },
+          ),
+        ],
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : crops.isEmpty
-              ? const Center(child: Text("No crops listed."))
+              ? Center(child: Text(tr('No crops listed.', 'कुनै बाली सूचीबद्ध छैन।')))
               : ListView.builder(
                   itemCount: crops.length,
                   itemBuilder: (context, index) {
@@ -56,11 +78,11 @@ class _CropsOverviewScreenState extends State<CropsOverviewScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: ListTile(
                         leading: const Icon(Icons.eco, color: Colors.green),
-                        title: Text(crop['name']),
+                        title: Text(tr(crop['name'], crop['name_ne'])),
                         subtitle: Text(
-                          "Farmer: ${crop['farmer']}\n"
-                          "Quantity: ${crop['quantity']} kg\n"
-                          "Price: Rs. ${crop['price']}/kg",
+                          "${tr('Farmer', 'किसान')}: ${tr(crop['farmer'], crop['farmer_ne'])}\n"
+                          "${tr('Quantity', 'परिमाण')}: ${crop['quantity']} kg\n"
+                          "${tr('Price', 'मूल्य')}: Rs. ${crop['price']}/kg",
                         ),
                         isThreeLine: true,
                       ),

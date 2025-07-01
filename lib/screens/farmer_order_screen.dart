@@ -1,24 +1,44 @@
 import 'package:flutter/material.dart';
-import '../utils/order_store.dart'; // Adjust this import if needed
+import '../utils/order_store.dart';
 
-class FarmerOrderScreen extends StatelessWidget {
+class FarmerOrderScreen extends StatefulWidget {
   const FarmerOrderScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // ✅ Mock list of verified buyers
-    final List<String> verifiedBuyers = ['Ramesh', 'Sita', 'buyer123'];
+  State<FarmerOrderScreen> createState() => _FarmerOrderScreenState();
+}
 
-    // ✅ Get current orders
+class _FarmerOrderScreenState extends State<FarmerOrderScreen> {
+  bool isNepali = true; // Language toggle
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> verifiedBuyers = ['Ramesh', 'Sita', 'buyer123'];
     final List<Map<String, dynamic>> orders = List.from(OrderStore.getOrders());
 
     return Scaffold(
-      appBar: AppBar(title: const Text("अर्डरहरू"), centerTitle: true),
+      appBar: AppBar(
+        title: Text(isNepali ? "अर्डरहरू" : "Orders"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: isNepali ? "Switch to English" : "नेपालीमा स्विच गर्नुहोस्",
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali;
+              });
+            },
+          ),
+        ],
+      ),
       body: orders.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
-                "अहिलेसम्म कुनै अर्डर गरिएको छैन।",
-                style: TextStyle(fontSize: 16),
+                isNepali
+                    ? "अहिलेसम्म कुनै अर्डर गरिएको छैन।"
+                    : "No orders placed yet.",
+                style: const TextStyle(fontSize: 16),
               ),
             )
           : ListView.builder(
@@ -26,53 +46,54 @@ class FarmerOrderScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final order = orders[index];
 
-                // ✅ Safely extract buyer name
-                final String buyerName = (order['buyerName'] ?? '')
-                    .toString()
-                    .trim();
+                final String buyerName =
+                    (order['buyerName'] ?? '').toString().trim();
                 final bool isVerified = verifiedBuyers.contains(buyerName);
 
-                // ✅ Debug print
-                print("DEBUG: Buyer: $buyerName, Verified: $isVerified");
-
                 return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.shopping_cart,
-                      color: Colors.green,
+                      color: Colors.green.shade700,
                     ),
                     title: Text(order['crop'] ?? ''),
                     subtitle: Text.rich(
                       TextSpan(
                         children: [
-                          TextSpan(text: "ग्राहक: $buyerName"),
+                          TextSpan(
+                            text: isNepali
+                                ? "ग्राहक: $buyerName"
+                                : "Buyer: $buyerName",
+                          ),
                           if (isVerified)
-                            const TextSpan(
-                              text: "  ✔ प्रमाणित",
-                              style: TextStyle(
+                            TextSpan(
+                              text: isNepali ? "  ✔ प्रमाणित" : "  ✔ Verified",
+                              style: const TextStyle(
                                 color: Colors.green,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           const TextSpan(text: "\n"),
                           TextSpan(
-                            text: "परिमाण: ${order['quantity'] ?? ''}\n",
+                            text: isNepali
+                                ? "परिमाण: ${order['quantity'] ?? ''}\n"
+                                : "Quantity: ${order['quantity'] ?? ''}\n",
                           ),
-                          TextSpan(text: "स्थिति: ${order['status'] ?? ''}"),
+                          TextSpan(
+                            text: isNepali
+                                ? "स्थिति: ${order['status'] ?? ''}"
+                                : "Status: ${order['status'] ?? ''}",
+                          ),
                         ],
                       ),
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
+                      tooltip: isNepali ? "हटाउनुहोस्" : "Delete",
                       onPressed: () {
-                        // ✅ Remove order
                         OrderStore.removeOrderAt(index);
-
-                        // ✅ Rebuild screen
                         Navigator.pushReplacement(
                           context,
                           PageRouteBuilder(

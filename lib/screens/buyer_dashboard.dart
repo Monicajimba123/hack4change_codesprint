@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
-import 'transportation_service_screen.dart';
 
-class BuyerDashboard extends StatelessWidget {
+class BuyerDashboard extends StatefulWidget {
   const BuyerDashboard({super.key});
 
-  Widget _buildDashboardCard(
-    BuildContext context, {
+  @override
+  State<BuyerDashboard> createState() => _BuyerDashboardState();
+}
+
+class _BuyerDashboardState extends State<BuyerDashboard> {
+  bool isNepali = true; // 🔥 Language toggle flag
+
+  // 🔥 Get text based on selected language
+  String getText({required String en, required String ne}) {
+    return isNepali ? ne : en;
+  }
+
+  // 🔥 Build a reusable card
+  Widget _buildDashboardCard({
     required IconData icon,
-    required String title,
-    required String subtitle,
+    required String enTitle,
+    required String neTitle,
+    required String enSubtitle,
+    required String neSubtitle,
     required VoidCallback onTap,
   }) {
     return Card(
@@ -18,113 +31,130 @@ class BuyerDashboard extends StatelessWidget {
       child: ListTile(
         leading: Icon(icon, size: 40, color: Colors.green),
         title: Text(
-          title,
+          getText(en: enTitle, ne: neTitle),
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios),
+        subtitle: Text(getText(en: enSubtitle, ne: neSubtitle)),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 18),
         onTap: onTap,
       ),
     );
   }
 
+  // 🔥 Build UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('क्रेता ड्यासबोर्ड'),
+        title: Text(
+          getText(en: 'Buyer Dashboard', ne: 'क्रेता ड्यासबोर्ड'),
+        ),
         centerTitle: true,
+        backgroundColor: Colors.green.shade700,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pushReplacementNamed(context, '/');
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali; // 🔥 Toggle language
+              });
+            },
+            tooltip: getText(en: 'Language', ne: 'भाषा'),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
-            const Text(
-              'स्वागत छ, क्रेता!',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            Text(
+              getText(en: 'Welcome, Buyer!', ne: 'स्वागत छ, क्रेता!'),
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
 
             _buildDashboardCard(
-              context,
               icon: Icons.shopping_bag,
-              title: 'बालीहरू हेर्नुहोस्',
-              subtitle: 'स्थानीय किसानबाट ताजा उत्पादन फेला पार्नुहोस्',
+              enTitle: 'Browse Crops',
+              neTitle: 'बालीहरू हेर्नुहोस्',
+              enSubtitle: 'Find fresh produce from local farmers',
+              neSubtitle: 'स्थानीय किसानबाट ताजा उत्पादन फेला पार्नुहोस्',
               onTap: () {
                 Navigator.pushNamed(context, '/buyer/browse');
               },
             ),
             _buildDashboardCard(
-              context,
               icon: Icons.shopping_cart,
-              title: 'मेरो कार्ट',
-              subtitle: 'तपाईंले कार्टमा थप्नुभएका बालीहरू हेर्नुहोस्',
+              enTitle: 'My Cart',
+              neTitle: 'मेरो कार्ट',
+              enSubtitle: 'View crops added to your cart',
+              neSubtitle: 'तपाईंले कार्टमा थप्नुभएका बालीहरू हेर्नुहोस्',
               onTap: () {
                 Navigator.pushNamed(context, '/buyer/cart');
               },
             ),
             _buildDashboardCard(
-              context,
               icon: Icons.history,
-              title: 'अर्डर इतिहास',
-              subtitle: 'तपाईंका विगतका अर्डरहरू हेर्नुहोस्',
+              enTitle: 'Order History',
+              neTitle: 'अर्डर इतिहास',
+              enSubtitle: 'Check your previous orders',
+              neSubtitle: 'तपाईंका विगतका अर्डरहरू हेर्नुहोस्',
               onTap: () {
                 Navigator.pushNamed(context, '/buyer/order-history');
               },
             ),
             _buildDashboardCard(
-              context,
               icon: Icons.person,
-              title: 'प्रोफाइल',
-              subtitle: 'आफ्नो प्रोफाइल जानकारी हेर्नुहोस् र सम्पादन गर्नुहोस्',
+              enTitle: 'Profile',
+              neTitle: 'प्रोफाइल',
+              enSubtitle: 'View and edit your profile info',
+              neSubtitle: 'आफ्नो प्रोफाइल जानकारी हेर्नुहोस् र सम्पादन गर्नुहोस्',
               onTap: () {
                 Navigator.pushNamed(context, '/buyer/profile');
               },
             ),
             _buildDashboardCard(
-              context,
               icon: Icons.map,
-              title: 'नक्सा खोल्नुहोस्',
-              subtitle: 'नजिकका किसानहरू र बालीहरू हेर्नुहोस्',
+              enTitle: 'Open Map',
+              neTitle: 'नक्सा खोल्नुहोस्',
+              enSubtitle: 'Find nearby farmers and crops',
+              neSubtitle: 'नजिकका किसानहरू र बालीहरू हेर्नुहोस्',
               onTap: () {
                 Navigator.pushNamed(context, '/map');
               },
             ),
             _buildDashboardCard(
-              context,
               icon: Icons.agriculture,
-              title: 'बाली सिफारिसहरू',
-              subtitle: 'क्षेत्र अनुसार सुझावहरू प्राप्त गर्नुहोस्',
+              enTitle: 'Crop Recommendations',
+              neTitle: 'बाली सिफारिसहरू',
+              enSubtitle: 'Get suggestions based on region',
+              neSubtitle: 'क्षेत्र अनुसार सुझावहरू प्राप्त गर्नुहोस्',
               onTap: () {
                 Navigator.pushNamed(context, '/recommendations');
               },
             ),
             _buildDashboardCard(
-              context,
               icon: Icons.local_shipping,
-              title: 'ढुवानी सेवा',
-              subtitle: 'उपलब्ध यातायात सेवाहरू हेर्नुहोस्',
+              enTitle: 'Transportation Service',
+              neTitle: 'ढुवानी सेवा',
+              enSubtitle: 'Check available transport services',
+              neSubtitle: 'उपलब्ध यातायात सेवाहरू हेर्नुहोस्',
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TransportationServiceScreen(),
-                  ),
-                );
+                Navigator.pushNamed(context, '/transport');
               },
             ),
-            // ✅ Added Chatbot Card
             _buildDashboardCard(
-              context,
               icon: Icons.chat,
-              title: 'च्याटबोट सहायता',
-              subtitle: 'कुनै प्रश्न? हामी सहायता गर्छौं',
+              enTitle: 'Chatbot Help',
+              neTitle: 'च्याटबोट सहायता',
+              enSubtitle: 'Need help? Chat with us',
+              neSubtitle: 'कुनै प्रश्न? हामी सहायता गर्छौं',
               onTap: () {
                 Navigator.pushNamed(context, '/buyer/chatbot');
               },

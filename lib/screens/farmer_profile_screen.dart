@@ -22,6 +22,7 @@ class FarmerProfileScreen extends StatefulWidget {
 
 class _FarmerProfileScreenState extends State<FarmerProfileScreen> {
   bool isEditing = false;
+  bool isNepali = true; // ✅ Language toggle
 
   late TextEditingController nameController;
   late TextEditingController emailController;
@@ -52,9 +53,14 @@ class _FarmerProfileScreenState extends State<FarmerProfileScreen> {
   void _toggleEdit() {
     setState(() {
       if (isEditing) {
-        // You can connect this to backend to save changes
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('प्रोफाइल सफलतापूर्वक अपडेट भयो।')),
+          SnackBar(
+            content: Text(
+              isNepali
+                  ? 'प्रोफाइल सफलतापूर्वक अपडेट भयो।'
+                  : 'Profile updated successfully.',
+            ),
+          ),
         );
       }
       isEditing = !isEditing;
@@ -65,33 +71,49 @@ class _FarmerProfileScreenState extends State<FarmerProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("कृषक प्रोफाइल"),
+        title: Text(isNepali ? "कृषक प्रोफाइल" : "Farmer Profile"),
         actions: [
           IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: isNepali ? "Switch to English" : "नेपालीमा स्विच गर्नुहोस्",
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali;
+              });
+            },
+          ),
+          IconButton(
             icon: Icon(isEditing ? Icons.save : Icons.edit),
+            tooltip: isEditing
+                ? (isNepali ? "सेभ गर्नुहोस्" : "Save")
+                : (isNepali ? "सम्पादन गर्नुहोस्" : "Edit"),
             onPressed: _toggleEdit,
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            _buildEditableField("नाम", nameController),
-            _buildEditableField("इमेल", emailController),
-            _buildEditableField("फोन नम्बर", phoneController),
-            _buildEditableField("ठेगाना", locationController),
-            _buildEditableField("खेती गरिएका बालीहरू", cropsController),
+            _buildEditableField(isNepali ? "नाम" : "Name", nameController),
+            _buildEditableField(isNepali ? "इमेल" : "Email", emailController),
+            _buildEditableField(
+                isNepali ? "फोन नम्बर" : "Phone", phoneController),
+            _buildEditableField(
+                isNepali ? "ठेगाना" : "Address", locationController),
+            _buildEditableField(
+                isNepali ? "खेती गरिएका बालीहरू" : "Crops", cropsController),
             const SizedBox(height: 30),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/');
               },
               icon: const Icon(Icons.logout),
-              label: const Text("लगआउट"),
+              label: Text(isNepali ? "लगआउट" : "Logout"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent,
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
               ),
             ),
           ],
@@ -100,7 +122,8 @@ class _FarmerProfileScreenState extends State<FarmerProfileScreen> {
     );
   }
 
-  Widget _buildEditableField(String label, TextEditingController controller) {
+  Widget _buildEditableField(
+      String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextField(

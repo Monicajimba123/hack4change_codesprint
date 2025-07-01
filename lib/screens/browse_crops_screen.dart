@@ -19,6 +19,27 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
   late List<Map<String, dynamic>> _filteredCrops;
   final TextEditingController _searchController = TextEditingController();
 
+  String _currentLang = 'ne'; // Default to Nepali
+
+  final Map<String, Map<String, String>> _localizedValues = {
+    'en': {
+      'title': 'Browse Crops',
+      'search_hint': 'Search crops...',
+      'no_results': 'No crops found.',
+      'added_to_cart': 'added to cart',
+      'language': 'नेपाली',
+    },
+    'ne': {
+      'title': 'बालीहरू हेर्नुहोस्',
+      'search_hint': 'बाली खोज्नुहोस्...',
+      'no_results': 'कुनै बाली फेला परेन।',
+      'added_to_cart': 'कार्टमा थपियो',
+      'language': 'English',
+    },
+  };
+
+  String t(String key) => _localizedValues[_currentLang]?[key] ?? key;
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +73,9 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
     if (selectedCrop != null) {
       widget.onAddToCart(selectedCrop);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${selectedCrop['name']} कार्टमा थपियो')),
+        SnackBar(
+          content: Text('${selectedCrop['name']} ${t('added_to_cart')}'),
+        ),
       );
     }
   }
@@ -61,7 +84,20 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('बालीहरू हेर्नुहोस्'),
+        title: Text(t('title')),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _currentLang = _currentLang == 'ne' ? 'en' : 'ne';
+              });
+            },
+            child: Text(
+              t('language'),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -71,7 +107,7 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
-                hintText: 'बाली खोज्नुहोस्...',
+                hintText: t('search_hint'),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -82,7 +118,7 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
             const SizedBox(height: 20),
             Expanded(
               child: _filteredCrops.isEmpty
-                  ? const Center(child: Text('कुनै बाली फेला परेन।'))
+                  ? Center(child: Text(t('no_results')))
                   : ListView.builder(
                       itemCount: _filteredCrops.length,
                       itemBuilder: (context, index) {
@@ -97,7 +133,8 @@ class _BrowseCropsScreenState extends State<BrowseCropsScreen> {
                             leading: const Icon(Icons.local_florist,
                                 color: Colors.green),
                             title: Text(crop['name']),
-                            subtitle: Text("रु. ${crop['price']}/के.जि."),
+                            subtitle:
+                                Text("रु. ${crop['price']}/के.जि."), // Price format
                             trailing: const Icon(Icons.arrow_forward_ios),
                             onTap: () => _navigateToFarmerDetail(crop),
                           ),

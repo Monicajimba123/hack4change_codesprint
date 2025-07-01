@@ -11,6 +11,12 @@ class MyCartScreen extends StatefulWidget {
 }
 
 class _MyCartScreenState extends State<MyCartScreen> {
+  bool isNepali = true; // 🌐 Language toggle
+
+  String getText({required String en, required String ne}) {
+    return isNepali ? ne : en;
+  }
+
   @override
   Widget build(BuildContext context) {
     double totalPrice = 0;
@@ -19,14 +25,34 @@ class _MyCartScreenState extends State<MyCartScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('मेरो कार्ट')),
+      appBar: AppBar(
+        title: Text(getText(en: 'My Cart', ne: 'मेरो कार्ट')),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali;
+              });
+            },
+            tooltip: getText(en: 'Language', ne: 'भाषा'),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Expanded(
               child: widget.cartItems.isEmpty
-                  ? const Center(child: Text('तपाईंको कार्ट खाली छ।'))
+                  ? Center(
+                      child: Text(
+                        getText(
+                          en: 'Your cart is empty.',
+                          ne: 'तपाईंको कार्ट खाली छ।',
+                        ),
+                      ),
+                    )
                   : ListView.builder(
                       itemCount: widget.cartItems.length,
                       itemBuilder: (context, index) {
@@ -44,7 +70,8 @@ class _MyCartScreenState extends State<MyCartScreen> {
                             ),
                             title: Text(item['name']),
                             subtitle: Text(
-                              'परिमाण: ${item['quantity']} के.जि.\nमूल्य: रु. ${item['price']} प्रति के.जि.',
+                              '${getText(en: 'Quantity', ne: 'परिमाण')}: ${item['quantity']} kg\n'
+                              '${getText(en: 'Price', ne: 'मूल्य')}: रु. ${item['price']} ${getText(en: 'per kg', ne: 'प्रति के.जि.')}',
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -83,9 +110,9 @@ class _MyCartScreenState extends State<MyCartScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'कुल',
-                          style: TextStyle(
+                        Text(
+                          getText(en: 'Total', ne: 'कुल'),
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -105,9 +132,15 @@ class _MyCartScreenState extends State<MyCartScreen> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('अर्डर सफलतापूर्वक गरियो!')),
+                            SnackBar(
+                              content: Text(
+                                getText(
+                                  en: 'Order placed successfully!',
+                                  ne: 'अर्डर सफलतापूर्वक गरियो!',
+                                ),
+                              ),
+                            ),
                           );
-                          // Add a short delay so the SnackBar shows
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pushReplacement(
                               context,
@@ -120,7 +153,9 @@ class _MyCartScreenState extends State<MyCartScreen> {
                           });
                         },
                         icon: const Icon(Icons.check_circle_outline),
-                        label: const Text('अर्डर गर्नुहोस्'),
+                        label: Text(
+                          getText(en: 'Place Order', ne: 'अर्डर गर्नुहोस्'),
+                        ),
                       ),
                     ),
                   ],

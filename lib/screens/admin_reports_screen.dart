@@ -14,6 +14,31 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
   int totalCrops = 0;
   int totalOrders = 0;
 
+  String _currentLang = 'ne'; // Default is Nepali
+
+  final Map<String, Map<String, String>> _localizedValues = {
+    'en': {
+      'title': 'Reports & Analytics',
+      'total_users': 'Total Users',
+      'total_crops': 'Total Crops',
+      'total_orders': 'Total Orders',
+      'coming_soon': 'More analytics coming soon...',
+      'loading': 'Loading...',
+      'language': 'नेपाली',
+    },
+    'ne': {
+      'title': 'रिपोर्ट र विश्लेषण',
+      'total_users': 'कुल प्रयोगकर्ता',
+      'total_crops': 'कुल बालीहरू',
+      'total_orders': 'कुल अर्डरहरू',
+      'coming_soon': 'थप विश्लेषण चाँडै आउँदैछ...',
+      'loading': 'लोड हुँदैछ...',
+      'language': 'English',
+    },
+  };
+
+  String t(String key) => _localizedValues[_currentLang]?[key] ?? key;
+
   @override
   void initState() {
     super.initState();
@@ -23,7 +48,7 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
   Future<void> _fetchAnalytics() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    // TODO: Replace these with actual backend stats
+    // Simulated backend data
     setState(() {
       totalUsers = 23;
       totalCrops = 14;
@@ -45,12 +70,14 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                )),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 10),
             Text(
               '$value',
@@ -69,22 +96,49 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("रिपोर्ट र विश्लेषण")),
+      appBar: AppBar(
+        title: Text(t('title')),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _currentLang = _currentLang == 'ne' ? 'en' : 'ne';
+              });
+            },
+            child: Text(
+              t('language'),
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 10),
+                  Text(
+                    t('loading'),
+                    style: const TextStyle(color: Colors.black54),
+                  ),
+                ],
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _buildStatCard("कुल प्रयोगकर्ता", totalUsers, Colors.blue),
+                  _buildStatCard(t('total_users'), totalUsers, Colors.blue),
                   const SizedBox(height: 16),
-                  _buildStatCard("कुल बालीहरू", totalCrops, Colors.green),
+                  _buildStatCard(t('total_crops'), totalCrops, Colors.green),
                   const SizedBox(height: 16),
-                  _buildStatCard("कुल अर्डरहरू", totalOrders, Colors.orange),
+                  _buildStatCard(t('total_orders'), totalOrders, Colors.orange),
                   const SizedBox(height: 30),
-                  const Text(
-                    "थप विश्लेषण चाँडै आउँदैछ...",
-                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                  Text(
+                    t('coming_soon'),
+                    style: const TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                 ],
               ),

@@ -9,8 +9,9 @@ class BuyerProfileScreen extends StatefulWidget {
 
 class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
   bool isEditing = false;
+  bool isNepali = true; // 🔥 Language toggle
 
-  // Mock data (replace with dynamic data after auth/database)
+  // Mock data (replace with database values later)
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController phoneController;
@@ -37,21 +38,29 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
   void _toggleEdit() {
     setState(() {
       if (isEditing) {
-        // Save logic here (e.g., update DB)
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('प्रोफाइल सफलतापूर्वक अपडेट भयो!')),
+          SnackBar(
+            content: Text(getText(
+              en: 'Profile updated successfully!',
+              ne: 'प्रोफाइल सफलतापूर्वक अपडेट भयो!',
+            )),
+          ),
         );
       }
       isEditing = !isEditing;
     });
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  String getText({required String en, required String ne}) {
+    return isNepali ? ne : en;
+  }
+
+  Widget _buildTextField(String enLabel, String neLabel, TextEditingController controller) {
     return TextField(
       controller: controller,
       readOnly: !isEditing,
       decoration: InputDecoration(
-        labelText: label,
+        labelText: getText(en: enLabel, ne: neLabel),
         border: const OutlineInputBorder(),
         filled: true,
         fillColor: Colors.grey[100],
@@ -64,32 +73,42 @@ class _BuyerProfileScreenState extends State<BuyerProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('क्रेता प्रोफाइल'),
+        title: Text(getText(en: 'Buyer Profile', ne: 'क्रेता प्रोफाइल')),
         actions: [
           IconButton(
             icon: Icon(isEditing ? Icons.save : Icons.edit),
             onPressed: _toggleEdit,
-          )
+            tooltip: getText(en: 'Edit/Save', ne: 'सम्पादन/सेभ'),
+          ),
+          IconButton(
+            icon: const Icon(Icons.language),
+            onPressed: () {
+              setState(() {
+                isNepali = !isNepali;
+              });
+            },
+            tooltip: getText(en: 'Language', ne: 'भाषा'),
+          ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
-            _buildTextField('पुरा नाम', nameController),
+            _buildTextField('Full Name', 'पुरा नाम', nameController),
             const SizedBox(height: 16),
-            _buildTextField('इमेल', emailController),
+            _buildTextField('Email', 'इमेल', emailController),
             const SizedBox(height: 16),
-            _buildTextField('फोन नम्बर', phoneController),
+            _buildTextField('Phone Number', 'फोन नम्बर', phoneController),
             const SizedBox(height: 16),
-            _buildTextField('ठेगाना', addressController),
+            _buildTextField('Address', 'ठेगाना', addressController),
             const SizedBox(height: 30),
             ElevatedButton.icon(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/');
               },
               icon: const Icon(Icons.logout),
-              label: const Text('लगआउट'),
+              label: Text(getText(en: 'Logout', ne: 'लगआउट')),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.redAccent,
               ),
